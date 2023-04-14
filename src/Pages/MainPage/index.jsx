@@ -9,9 +9,10 @@ import {
   IconButton,
   Tooltip,
 } from "@chakra-ui/react";
-import { AddIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
+import { AddIcon, EditIcon, DeleteIcon, CloseIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import Modal from "./Modal";
+import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
   const [produtos, setProdutos] = useState([]);
@@ -78,12 +79,26 @@ const MainPage = () => {
       console.error("Erro ao editar produto:", error);
     }
   };
+
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    navigate("/");
+  };
    
   return (
     <Box p="4">
-      <Heading as="h1" size="xl" mb="4">
+      <Flex justify="space-between" alignItems="center" mb="4">
+      <Heading as="h1" size="xl">
         Produtos
       </Heading>
+      <IconButton
+        icon={<CloseIcon />}
+        aria-label="Logout"
+        size="sm"
+        variant="ghost"
+        onClick={handleLogout}
+      />
+      </Flex> 
       <Button
         leftIcon={<AddIcon />}
         colorScheme="teal"
