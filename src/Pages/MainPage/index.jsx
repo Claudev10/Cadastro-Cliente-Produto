@@ -16,14 +16,16 @@ import Modal from "./Modal";
 const MainPage = () => {
   const [produtos, setProdutos] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); 
-  const [produtoSelecionado, setProdutoSelecionado] = useState(null); 
-  useEffect(() => {
+  const [editingProdutoId, setEditingProdutoId] = useState(null);
+   useEffect(() => {
     fetchProdutos();
   }, []);
 
+  const baseURL = "http://localhost:5000/produtos"
+
   const fetchProdutos = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/produtos");
+      const response = await axios.get(baseURL);
       setProdutos(response.data);
     } catch (error) {
       console.error("Erro ao buscar produtos:", error);
@@ -32,7 +34,7 @@ const MainPage = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/produtos/${id}`);
+      await axios.delete(`${baseURL}/${id}`);
       fetchProdutos();
     } catch (error) {
       console.error("Erro ao excluir produto:", error);
@@ -49,7 +51,7 @@ const MainPage = () => {
 
   const handleProdutoConfirm = async (produto) => {
     try {
-      await axios.post("http://localhost:5000/produtos", produto);
+      await axios.post(baseURL, produto);
       fetchProdutos();
       setIsModalOpen(false); 
     } catch (error) {
@@ -57,17 +59,23 @@ const MainPage = () => {
     }
   };
 
-  const handleProdutoEdit = async (produto) => {
+  const handleEdit = (id) => {
+    setEditingProdutoId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleProdutoEditConfirm = async (produto) => {
     try {
-      await axios.put(`http://localhost:5000/produtos/${produto.id}`, produto); // Fazer a requisição de edição do produto
-      await fetchProdutos(); // Atualizar a lista de produtos após a edição
-      setIsModalOpen(false); // Fechar o modal de edição
-      setProdutoSelecionado(null); // Limpar o produto selecionado
+      await axios.put(`${baseURL}/${editingProdutoId}`, produto);
+      fetchProdutos();
+      setIsModalOpen(false);
+      setEditingProdutoId(null);
     } catch (error) {
       console.error("Erro ao editar produto:", error);
     }
   };
 
+   
   return (
     <Box p="4">
       <Heading as="h1" size="xl" mb="4">
@@ -95,8 +103,8 @@ const MainPage = () => {
                   size="sm"
                   variant="ghost"
                   onClick={() => {
-                    setProdutoSelecionado(produto); // Setar o produto selecionado
-                    setIsModalOpen(true); // Abrir o modal de edição
+                    handleEdit(produto.id);
+                    setIsModalOpen(true); 
                   }}
                 />
                 </Tooltip>
@@ -126,8 +134,7 @@ const MainPage = () => {
         <Modal
           isOpen={isModalOpen}
           onClose={handleModalClose}
-          onConfirm={produtoSelecionado ? handleProdutoEdit : handleProdutoConfirm} 
-          produto={produtoSelecionado} 
+          onConfirm={editingProdutoId ? handleProdutoEditConfirm : handleProdutoConfirm}           
           />
       )}
     </Box>
