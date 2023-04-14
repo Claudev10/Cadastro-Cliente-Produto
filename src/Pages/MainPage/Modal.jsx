@@ -22,8 +22,7 @@ const Modal = ({ isOpen, onClose, onConfirm, produto }) => {
   const [codigoError, setCodigoError] = useState("");
 
   useEffect(() => {
-    if (produto !== null) {
-      // Atualizar o estado do modal com o produto quando produto não for nulo
+    if (produto !== null) {      
       setNome(produto.nome || "");
       setCodigo(produto.codigo || "");
       setTipo(produto.tipo || "");

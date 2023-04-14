@@ -21,5 +21,13 @@
       "descricao": "",
       "id": 4
     }
+  ],
+  "Users": [
+    {
+      "usuario": "cl",
+      "email": "claud.dev10@gmail.com",
+      "senha": "1",
+      "id": 1
+    }
   ]
 }
