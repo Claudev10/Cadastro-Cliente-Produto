@@ -17,6 +17,7 @@ const MainPage = () => {
   const [produtos, setProdutos] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); 
   const [editingProdutoId, setEditingProdutoId] = useState(null);
+  const [editingProduto, setEditingProduto] = useState(null); 
    useEffect(() => {
     fetchProdutos();
   }, []);
@@ -59,7 +60,9 @@ const MainPage = () => {
     }
   };
 
-  const handleEdit = (id) => {
+  const handleEdit = (id) => {   
+    const produto = produtos.find(produto => produto.id === id);
+    setEditingProduto(produto); 
     setEditingProdutoId(id);
     setIsModalOpen(true);
   };
@@ -69,12 +72,12 @@ const MainPage = () => {
       await axios.put(`${baseURL}/${editingProdutoId}`, produto);
       fetchProdutos();
       setIsModalOpen(false);
+      setEditingProduto(null);
       setEditingProdutoId(null);
     } catch (error) {
       console.error("Erro ao editar produto:", error);
     }
   };
-
    
   return (
     <Box p="4">
@@ -96,15 +99,14 @@ const MainPage = () => {
               <Heading as="h2" size="md" flexGrow="1">
                 {produto.nome}
               </Heading>
-              <Tooltip label="Editar" placement="top">
+              <Tooltip label="Editar" hasArrow placement="top">
                 <IconButton
                   icon={<EditIcon />}
                   aria-label="Editar"
                   size="sm"
                   variant="ghost"
                   onClick={() => {
-                    handleEdit(produto.id);
-                    setIsModalOpen(true); 
+                    handleEdit(produto.id);                    
                   }}
                 />
                 </Tooltip>
@@ -134,8 +136,9 @@ const MainPage = () => {
         <Modal
           isOpen={isModalOpen}
           onClose={handleModalClose}
-          onConfirm={editingProdutoId ? handleProdutoEditConfirm : handleProdutoConfirm}           
-          />
+          onConfirm={editingProdutoId ? handleProdutoEditConfirm : handleProdutoConfirm} 
+          produto={editingProduto} 
+        />
       )}
     </Box>
   );

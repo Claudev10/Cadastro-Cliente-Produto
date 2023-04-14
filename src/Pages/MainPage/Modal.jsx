@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal as ChakraModal,
   ModalOverlay,
@@ -13,13 +13,23 @@ import {
   FormErrorMessage
 } from "@chakra-ui/react";
 
-const Modal = ({ isOpen, onClose, onConfirm }) => {
+const Modal = ({ isOpen, onClose, onConfirm, produto }) => {
   const [nome, setNome] = useState("");
   const [codigo, setCodigo] = useState("");
   const [tipo, setTipo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [nomeError, setNomeError] = useState("");
   const [codigoError, setCodigoError] = useState("");
+
+  useEffect(() => {
+    if (produto !== null) {
+      // Atualizar o estado do modal com o produto quando produto não for nulo
+      setNome(produto.nome || "");
+      setCodigo(produto.codigo || "");
+      setTipo(produto.tipo || "");
+      setDescricao(produto.descricao || "");
+    }
+  }, [produto]);
 
   const handleConfirm = () => {    
     if (!nome) {
