@@ -10,7 +10,7 @@ import {
   FormControl,
   FormLabel,
   Input,
-  FormErrorMessage
+  FormErrorMessage, useToast
 } from "@chakra-ui/react";
 
 const Modal = ({ isOpen, onClose, onConfirm, produto }) => {
@@ -20,6 +20,8 @@ const Modal = ({ isOpen, onClose, onConfirm, produto }) => {
   const [descricao, setDescricao] = useState("");
   const [nomeError, setNomeError] = useState("");
   const [codigoError, setCodigoError] = useState("");
+
+  const toast = useToast();
 
   useEffect(() => {
     if (produto !== null) {      
@@ -40,6 +42,19 @@ const Modal = ({ isOpen, onClose, onConfirm, produto }) => {
       return;
     }
     onConfirm({ nome, codigo, tipo, descricao });
+
+    toast({
+      title: "Sucesso",
+      description: "Produto adicionado/editado com sucesso!",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top",
+      variant: "subtle",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)"
+    });
   };
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate} from "react-router-dom";
-import { Box, Button, FormControl, FormLabel, Heading, Input, Stack } from "@chakra-ui/react";
+import { Box, Button, FormControl, FormLabel, Heading, Input, Stack, useToast } from "@chakra-ui/react";
 import axios from "axios";
 
 const SignupPage = () => {
@@ -11,8 +11,11 @@ const SignupPage = () => {
     const [confirmarSenha, setConfirmarSenha] = useState("");
     const [erroCadastro, setErroCadastro] = useState(false); 
     const [mensagemErroCadastro, setMensagemErroCadastro] = useState(""); 
+    const [errorMessage, setErrorMessage] = useState("");
 
     const baseURL = "http://localhost:5000/users"
+
+    const toast = useToast(); 
 
     const handleBackClick = () => {
         navigate('/')
@@ -25,18 +28,18 @@ const SignupPage = () => {
 
     const handleCadastroClick = async () => { 
       if (!usuario || !email || !senha || !confirmarSenha) {
-        alert("Preencha todos os campos");
+        setErrorMessage("Preencha todos os campos.");
         return;
       }
 
       if (!validarEmail(email)) {
-          alert("Digite um email válido.");
-          return;
+        setErrorMessage("Digite um email válido.");
+        return;
       }
   
       if (senha !== confirmarSenha) {
-          alert("As senhas não coincidem. Tente novamente.");
-          return;
+        setErrorMessage("As senhas não coincidem. Tente novamente.");
+        return;
       } 
      
     const usuarioData = {
@@ -44,7 +47,7 @@ const SignupPage = () => {
       email: email,
       senha: senha,   
     };
-
+    
     try {
       const response = await axios.get(`${baseURL}?email=${email}`); 
       if (response.data.length > 0) {        
@@ -54,11 +57,21 @@ const SignupPage = () => {
       }
       
       await axios.post(baseURL, usuarioData);      
-      alert("Usuário cadastrado com sucesso!");
-      navigate('/'); // Redirecionar para a página inicial após o cadastro bem sucedido
+      toast({
+        title: "Cadastro realizado com sucesso!",
+        description: "Seu cadastro foi concluído com sucesso.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+        variant: "subtle",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)"
+      });
+      navigate('/'); 
     } catch (error) {
-      console.error("Erro ao cadastrar:", error);
-      // Exibir mensagem de erro genérica em caso de falha no cadastro
+      console.error("Erro ao cadastrar:", error);      
       setErroCadastro(true);
       setMensagemErroCadastro("Ocorreu um erro ao cadastrar. Por favor, tente novamente.");
     }
@@ -111,11 +124,16 @@ const SignupPage = () => {
               onChange={(e) => setConfirmarSenha(e.target.value)}
             />
           </FormControl>
-          {erroCadastro && ( // Exibir mensagem de erro de cadastro, se houver
+          {erroCadastro && ( 
             <Box mb="4" color="red" fontWeight="bold">
               {mensagemErroCadastro}
             </Box>
           )}
+          {errorMessage && (
+            <Box mb="4" color="red">
+                {errorMessage}
+            </Box>
+        )}         
         <Stack direction="row" justifyContent="center" mb="4">
           <Button colorScheme="blue" onClick={handleCadastroClick}>Cadastrar</Button>
           <Button colorScheme="gray" onClick={handleBackClick}>Voltar</Button>
