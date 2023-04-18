@@ -15,18 +15,11 @@
       "descricao": "Descrição do Produto 3"
     },
     {
-      "nome": "asdsa",
-      "codigo": "asd",
-      "tipo": "",
+      "nome": "asd",
+      "codigo": "asdad",
+      "tipo": "asd",
       "descricao": "",
       "id": 4
-    },
-    {
-      "nome": "455",
-      "codigo": "a",
-      "tipo": "",
-      "descricao": "",
-      "id": 5
     }
   ],
   "Users": [
@@ -43,16 +36,10 @@
       "id": 2
     },
     {
-      "usuario": "1",
-      "email": "2@gmail.com",
-      "senha": "1",
+      "usuario": "4",
+      "email": "4@gmail.com",
+      "senha": "4",
       "id": 3
-    },
-    {
-      "usuario": "1",
-      "email": "3@gmail.com",
-      "senha": "1",
-      "id": 4
     }
   ]
 }

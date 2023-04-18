@@ -8,22 +8,26 @@ import {
   Flex,
   IconButton,
   Tooltip,
+  useToast
 } from "@chakra-ui/react";
-import { AddIcon, EditIcon, DeleteIcon, CloseIcon } from "@chakra-ui/icons";
+import { AddIcon, EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import Modal from "./Modal";
 import { useNavigate } from "react-router-dom";
+import Header from "./Header";
 
 const MainPage = () => {
   const [produtos, setProdutos] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProdutoId, setEditingProdutoId] = useState(null);
-  const [editingProduto, setEditingProduto] = useState(null); 
-   useEffect(() => {
+  const [editingProduto, setEditingProduto] = useState(null);
+  useEffect(() => {
     fetchProdutos();
   }, []);
 
   const baseURL = "http://localhost:5000/produtos"
+
+  const toast = useToast('')
 
   const fetchProdutos = async () => {
     try {
@@ -37,33 +41,57 @@ const MainPage = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${baseURL}/${id}`);
-      fetchProdutos();
+      fetchProdutos();      
+      toast({
+        title: 'Produto deletado!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+        variant: "subtle",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)"
+      });
     } catch (error) {
       console.error("Erro ao excluir produto:", error);
     }
   };
 
   const handleAddProduto = () => {
-    setIsModalOpen(true); 
+    setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
-    setIsModalOpen(false); 
+    setIsModalOpen(false);
   };
+
+
 
   const handleProdutoConfirm = async (produto) => {
     try {
       await axios.post(baseURL, produto);
       fetchProdutos();
-      setIsModalOpen(false); 
+      setIsModalOpen(false);
+      toast({
+        title: 'Produto adicionado!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+        variant: "subtle",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)"
+      });
     } catch (error) {
       console.error("Erro ao adicionar produto:", error);
     }
   };
 
-  const handleEdit = (id) => {   
+  const handleEdit = (id) => {
     const produto = produtos.find(produto => produto.id === id);
-    setEditingProduto(produto); 
+    setEditingProduto(produto);
     setEditingProdutoId(id);
     setIsModalOpen(true);
   };
@@ -75,6 +103,17 @@ const MainPage = () => {
       setIsModalOpen(false);
       setEditingProduto(null);
       setEditingProdutoId(null);
+      toast({
+        title: 'Produto editado!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+        variant: "subtle",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)"
+      });
     } catch (error) {
       console.error("Erro ao editar produto:", error);
     }
@@ -84,21 +123,10 @@ const MainPage = () => {
   const handleLogout = () => {
     navigate("/");
   };
-   
+
   return (
     <Box p="4">
-      <Flex justify="space-between" alignItems="center" mb="4">
-      <Heading as="h1" size="xl">
-        Produtos
-      </Heading>
-      <IconButton
-        icon={<CloseIcon />}
-        aria-label="Logout"
-        size="sm"
-        variant="ghost"
-        onClick={handleLogout}
-      />
-      </Flex> 
+      <Header handleLogout={handleLogout} />
       <Button
         leftIcon={<AddIcon />}
         colorScheme="teal"
@@ -121,10 +149,10 @@ const MainPage = () => {
                   size="sm"
                   variant="ghost"
                   onClick={() => {
-                    handleEdit(produto.id);                    
+                    handleEdit(produto.id);
                   }}
                 />
-                </Tooltip>
+              </Tooltip>
               <Tooltip label="Apagar" placement="top">
                 <IconButton
                   icon={<DeleteIcon />}
@@ -146,13 +174,13 @@ const MainPage = () => {
             </Text>
           </Box>
         ))}
-      </VStack>      
+      </VStack>
       {isModalOpen && (
         <Modal
           isOpen={isModalOpen}
           onClose={handleModalClose}
-          onConfirm={editingProdutoId ? handleProdutoEditConfirm : handleProdutoConfirm} 
-          produto={editingProduto} 
+          onConfirm={editingProdutoId ? handleProdutoEditConfirm : handleProdutoConfirm}
+          produto={editingProduto}
         />
       )}
     </Box>

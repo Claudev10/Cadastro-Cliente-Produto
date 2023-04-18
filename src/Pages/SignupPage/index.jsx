@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate} from "react-router-dom";
-import { Box, Button, FormControl, FormLabel, Heading, Input, Stack, useToast } from "@chakra-ui/react";
+import { Box, Button, FormControl, FormLabel, Heading, Input, Stack, useToast, InputGroup, InputRightElement, IconButton } from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon,  } from '@chakra-ui/icons'
 import axios from "axios";
 
 const SignupPage = () => {
@@ -12,6 +13,8 @@ const SignupPage = () => {
     const [erroCadastro, setErroCadastro] = useState(false); 
     const [mensagemErroCadastro, setMensagemErroCadastro] = useState(""); 
     const [errorMessage, setErrorMessage] = useState("");
+    const [showSenha, setShowSenha] = useState(false);
+    const [showConfirmarSenha, setShowConfirmarSenha] = useState(false);
 
     const baseURL = "http://localhost:5000/users"
 
@@ -76,6 +79,9 @@ const SignupPage = () => {
       setMensagemErroCadastro("Ocorreu um erro ao cadastrar. Por favor, tente novamente.");
     }
   };
+
+  const handleShowSenha = () => setShowSenha(!showSenha);
+  const handleShowConfirmarSenha = () => setShowConfirmarSenha(!showConfirmarSenha);
   
   return (
     <Box
@@ -108,21 +114,45 @@ const SignupPage = () => {
           </FormControl>
           <FormControl mb="4">
             <FormLabel>Senha</FormLabel>
-            <Input
-              type="password"
-              placeholder="Digite sua senha"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-            />
+            <InputGroup>
+              <Input
+                type={showSenha ? "text" : "password"}
+                placeholder="Digite sua senha"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                />
+              <InputRightElement width="4.5rem">
+                <IconButton
+                h="1.75rem"
+                size="sm"
+                icon={showSenha ? <ViewIcon /> : <ViewOffIcon />}
+                onClick={handleShowSenha}
+                ml="1"
+                mr="-1.5rem"
+                />
+              </InputRightElement>
+            </InputGroup>
           </FormControl>
           <FormControl mb="4">
             <FormLabel>Confirmar Senha</FormLabel>
-            <Input
-              type="password"
-              placeholder="Confirme sua senha"
-              value={confirmarSenha}
-              onChange={(e) => setConfirmarSenha(e.target.value)}
-            />
+            <InputGroup>
+              <Input
+                type={showConfirmarSenha ? "text" : "password"}
+                placeholder="Confirme sua senha"
+                value={confirmarSenha}
+                onChange={(e) => setConfirmarSenha(e.target.value)}
+                />
+              <InputRightElement width="4.5rem">
+                <IconButton
+                h="1.75rem"
+                size="sm"                
+                icon={showConfirmarSenha ? <ViewIcon /> : <ViewOffIcon />}
+                onClick={handleShowConfirmarSenha}
+                ml="1"
+                mr="-1.5rem"
+                />
+              </InputRightElement>
+            </InputGroup>
           </FormControl>
           {erroCadastro && ( 
             <Box mb="4" color="red" fontWeight="bold">
